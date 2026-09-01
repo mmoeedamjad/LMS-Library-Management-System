@@ -1,0 +1,147 @@
+<%- include("../partials/code-header") %>
+
+<!-- Breadcrumb Navigation -->
+<div class="admin-topbar d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+  <div class="d-flex align-items-center gap-2 small">
+    <a href="/api/dashboard" class="text-muted text-decoration-none">Dashboard</a>
+    <span class="text-muted">/</span>
+    <a href="/api/users/<%= user.role %>" class="text-muted text-decoration-none"><%= user.role === 'admin' ? 'Admins' : 'Users' %></a>
+    <span class="text-muted">/</span>
+    <span class="fw-bold text-dark" style="font-family: var(--font-cinzel);">Edit: <%= user.name %></span>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="/api/users/<%= user._id %>" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+      <i class="bi bi-eye"></i> View Dossier
+    </a>
+    <a href="/api/users/<%= user.role %>" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+      <i class="bi bi-arrow-left"></i> <%= user.role === 'admin' ? 'Admins' : 'Users' %>
+    </a>
+  </div>
+</div>
+
+<!-- Header -->
+<div class="mb-4">
+  <span class="text-uppercase fw-bold" style="font-family: var(--font-cinzel); color: var(--ath-terracotta); font-size: 0.76rem; letter-spacing: 1.5px;">
+    ACCOUNT MODIFICATION &bull; CREDENTIAL AUDIT
+  </span>
+  <h1 class="display-6 fw-bold mt-1 mb-1" style="font-family: var(--font-serif); color: var(--ath-text-main);">
+    Edit Account: <%= user.name %>
+  </h1>
+  <p class="text-muted small mb-0">
+    Update member profile data, modify administrative permissions, or adjust account active status.
+  </p>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-12 col-md-8 col-lg-7">
+    <div class="dashboard-card">
+      <div class="dashboard-card-header d-flex align-items-center justify-content-between">
+        <h3 class="dashboard-card-title" style="font-size: 1.15rem;">
+          <i class="bi bi-pencil-square text-warning"></i> Account Record
+        </h3>
+        <span class="badge bg-light text-muted border font-monospace small">ID: <%= user._id %></span>
+      </div>
+
+      <div class="dashboard-card-body p-4">
+        <!-- Error Alerts -->
+        <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+          <div class="alert alert-danger py-2 px-3 small border-0 bg-danger bg-opacity-10 text-danger border border-danger border-opacity-20 rounded-2 mb-4">
+            <ul class="mb-0 ps-3">
+              <% errors.forEach(error => { %>
+                <li><%= error.msg %></li>
+              <% }) %>
+            </ul>
+          </div>
+        <% } %>
+
+        <form class="styled-form" action="/api/users/edit/<%= user._id %>" method="POST">
+          <div class="mb-3">
+            <label for="name" class="auth-label">
+              <i class="bi bi-person me-1"></i> Full Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              id="name"
+              class="auth-input"
+              value="<%= oldInput && oldInput.name ? oldInput.name : user.name %>"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="email" class="auth-label">
+              <i class="bi bi-envelope me-1"></i> Email Address
+            </label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              class="auth-input"
+              value="<%= oldInput && oldInput.email ? oldInput.email : user.email %>"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="auth-label">
+              <i class="bi bi-lock me-1"></i> Reset Password (leave blank to keep current)
+            </label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              class="auth-input"
+              placeholder="Enter new password to override"
+              autocomplete="new-password"
+            />
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label for="role" class="auth-label">
+                <i class="bi bi-shield me-1"></i> Account Role
+              </label>
+              <% let currentRole = (oldInput && oldInput.role) ? oldInput.role : user.role; %>
+              <select name="role" id="role" class="auth-input">
+                <option value="user" <%= currentRole === "user" ? "selected" : "" %>>Scholar Member (user)</option>
+                <option value="admin" <%= currentRole === "admin" ? "selected" : "" %>>System Administrator (admin)</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for="isActive" class="auth-label">
+                <i class="bi bi-toggle-on me-1"></i> Active Status
+              </label>
+              <% let currentActive = (oldInput && oldInput.isActive) ? oldInput.isActive : user.isActive; %>
+              <select name="isActive" id="isActive" class="auth-input">
+                <option value="Y" <%= currentActive === "Y" ? "selected" : "" %>>Active (Y)</option>
+                <option value="N" <%= currentActive === "N" ? "selected" : "" %>>Suspended (N)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 pt-3 border-top">
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn-terracotta d-inline-flex align-items-center gap-1">
+                <i class="bi bi-check-circle"></i> Save Changes
+              </button>
+              <a href="/api/users/<%= user.role %>" class="btn btn-outline-secondary">
+                Cancel
+              </a>
+            </div>
+            <button
+              type="button"
+              class="btn btn-outline-danger d-inline-flex align-items-center gap-1"
+              onclick="confirmDelete('/api/users/delete/<%= user._id %>')"
+            >
+              <i class="bi bi-trash"></i> Delete Account
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include("../partials/code-footer") %>

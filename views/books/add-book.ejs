@@ -1,0 +1,179 @@
+<%- include("../partials/code-header") %>
+
+<!-- Breadcrumb Navigation -->
+<div class="admin-topbar d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+  <div class="d-flex align-items-center gap-2 small">
+    <a href="/api/dashboard" class="text-muted text-decoration-none">Dashboard</a>
+    <span class="text-muted">/</span>
+    <a href="/api/books" class="text-muted text-decoration-none">Books Catalog</a>
+    <span class="text-muted">/</span>
+    <span class="fw-bold text-dark" style="font-family: var(--font-cinzel);">New Volume</span>
+  </div>
+  <a href="/api/books" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+    <i class="bi bi-arrow-left"></i> Back to Catalog
+  </a>
+</div>
+
+<!-- Header -->
+<div class="mb-4">
+  <span class="text-uppercase fw-bold" style="font-family: var(--font-cinzel); color: var(--ath-terracotta); font-size: 0.76rem; letter-spacing: 1.5px;">
+    ACCESSION REGISTRATION &bull; PHYSICAL STACKS
+  </span>
+  <h1 class="display-6 fw-bold mt-1 mb-1" style="font-family: var(--font-serif); color: var(--ath-text-main);">
+    Catalog New Book Volume
+  </h1>
+  <p class="text-muted small mb-0">
+    Enter publication details, classify within archival categories, and designate shelf stack coordinates.
+  </p>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-12 col-xl-10">
+    <div class="dashboard-card">
+      <div class="dashboard-card-header">
+        <h3 class="dashboard-card-title" style="font-size: 1.15rem;">
+          <i class="bi bi-book text-warning"></i> Volume Bibliographic Record
+        </h3>
+        <span class="badge bg-light text-muted border font-monospace small">New Accession</span>
+      </div>
+
+      <div class="dashboard-card-body p-4">
+        <!-- Error Alerts -->
+        <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+          <div class="alert alert-danger py-2 px-3 small border-0 bg-danger bg-opacity-10 text-danger border border-danger border-opacity-20 rounded-2 mb-4">
+            <ul class="mb-0 ps-3">
+              <% errors.forEach(error => { %>
+                <li><%= error.msg %></li>
+              <% }) %>
+            </ul>
+          </div>
+        <% } %>
+
+        <form class="styled-form" action="/api/books" method="POST">
+          <!-- Row 1: Title & Author -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-7">
+              <label for="title" class="auth-label">
+                <i class="bi bi-bookmark me-1"></i> Book Title
+              </label>
+              <input
+                type="text"
+                name="title"
+                id="title"
+                class="auth-input"
+                placeholder="e.g. Designing Data-Intensive Applications"
+                value="<%= oldInput?.title || '' %>"
+                required
+              />
+            </div>
+            <div class="col-md-5">
+              <label for="authorName" class="auth-label">
+                <i class="bi bi-person me-1"></i> Author Name
+              </label>
+              <input
+                type="text"
+                name="authorName"
+                id="authorName"
+                class="auth-input"
+                placeholder="e.g. Martin Kleppmann"
+                value="<%= oldInput?.authorName || '' %>"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Row 2: ISBN & Category -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="isbn" class="auth-label">
+                <i class="bi bi-upc-scan me-1"></i> ISBN Number
+              </label>
+              <input
+                type="text"
+                name="isbn"
+                id="isbn"
+                class="auth-input font-monospace"
+                placeholder="e.g. 978-1449373320"
+                value="<%= oldInput?.isbn || '' %>"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="categoryId" class="auth-label">
+                <i class="bi bi-tag me-1"></i> Archival Category
+              </label>
+              <select name="categoryId" id="categoryId" class="auth-input" required>
+                <option value="">-- Select Collection Category --</option>
+                <% categories.forEach(cat => { %>
+                  <option value="<%= cat._id %>" <%= oldInput?.categoryId == cat._id ? 'selected' : '' %>>
+                    <%= cat.name %>
+                  </option>
+                <% }) %>
+              </select>
+            </div>
+          </div>
+
+          <!-- Row 3: Copies & Shelf Location -->
+          <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <label for="totalCopies" class="auth-label">
+                <i class="bi bi-collection me-1"></i> Total Copies Acquired
+              </label>
+              <input
+                type="number"
+                name="totalCopies"
+                id="totalCopies"
+                min="1"
+                class="auth-input font-monospace"
+                placeholder="e.g. 5"
+                value="<%= oldInput?.totalCopies || '5' %>"
+                required
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="copiesAvailable" class="auth-label">
+                <i class="bi bi-check2-circle me-1"></i> Available on Shelf
+              </label>
+              <input
+                type="number"
+                name="copiesAvailable"
+                id="copiesAvailable"
+                min="0"
+                class="auth-input font-monospace"
+                placeholder="e.g. 5"
+                value="<%= oldInput?.copiesAvailable || '5' %>"
+                required
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="shelfLocation" class="auth-label">
+                <i class="bi bi-geo-alt me-1"></i> Shelf Location
+              </label>
+              <input
+                type="text"
+                name="shelfLocation"
+                id="shelfLocation"
+                class="auth-input font-monospace"
+                placeholder="e.g. STACK-A3 / AISLE-4"
+                value="<%= oldInput?.shelfLocation || '' %>"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="d-flex flex-wrap gap-2 pt-3 border-top">
+            <button type="submit" class="btn-terracotta d-inline-flex align-items-center gap-1">
+              <i class="bi bi-check-circle me-1"></i> Save &amp; Catalog Volume
+            </button>
+            <a href="/api/books" class="btn btn-outline-secondary">
+              <i class="bi bi-x-circle me-1"></i> Cancel &amp; Return
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include("../partials/code-footer") %>

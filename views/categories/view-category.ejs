@@ -1,0 +1,87 @@
+<%- include("../partials/code-header") %>
+
+<!-- Breadcrumb Navigation -->
+<div class="admin-topbar d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+  <div class="d-flex align-items-center gap-2 small">
+    <a href="/api/dashboard" class="text-muted text-decoration-none">Dashboard</a>
+    <span class="text-muted">/</span>
+    <a href="/api/category" class="text-muted text-decoration-none">Categories</a>
+    <span class="text-muted">/</span>
+    <span class="fw-bold text-dark" style="font-family: var(--font-cinzel);"><%= categories.name %></span>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="/api/category/edit/<%= categories._id %>" class="btn-terracotta btn-sm d-inline-flex align-items-center gap-1">
+      <i class="bi bi-pencil"></i> Edit Category
+    </a>
+    <a href="/api/category" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+      <i class="bi bi-arrow-left"></i> Categories
+    </a>
+  </div>
+</div>
+
+<!-- Header -->
+<div class="mb-4">
+  <span class="text-uppercase fw-bold" style="font-family: var(--font-cinzel); color: var(--ath-terracotta); font-size: 0.76rem; letter-spacing: 1.5px;">
+    TAXONOMY CLASSIFICATION DOSSIER
+  </span>
+  <h1 class="display-6 fw-bold mt-1 mb-1" style="font-family: var(--font-serif); color: var(--ath-text-main);">
+    <%= categories.name %>
+  </h1>
+  <p class="text-muted small mb-0">
+    Archival classification in the Lahore Central Repository catalog.
+  </p>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-12 col-md-8 col-lg-7">
+    <div class="dashboard-card">
+      <div class="dashboard-card-header d-flex align-items-center justify-content-between">
+        <h3 class="dashboard-card-title" style="font-size: 1.15rem;">
+          <i class="bi bi-folder2 text-warning"></i> Classification Details
+        </h3>
+        <span class="badge bg-light text-muted border font-monospace small">ID: <%= categories._id %></span>
+      </div>
+
+      <div class="dashboard-card-body p-4">
+        <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+          <div class="p-3 rounded-circle bg-warning bg-opacity-10 text-warning border">
+            <i class="bi bi-folder2-open fs-2"></i>
+          </div>
+          <div>
+            <h4 class="fw-bold mb-0 text-dark" style="font-family: var(--font-serif);"><%= categories.name %></h4>
+            <div class="font-monospace small text-muted">ID: <%= categories._id %></div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <h6 class="text-uppercase fw-bold text-muted small" style="font-family: var(--font-cinzel); font-size: 0.72rem; letter-spacing: 1px;">
+            Curatorial Scope &amp; Purpose
+          </h6>
+          <p class="text-dark" style="line-height: 1.7;">
+            <%= categories.description || 'General collection branch encompassing treatises, monographs, and related scholarly materials.' %>
+          </p>
+        </div>
+
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 pt-3 border-top">
+          <div class="d-flex gap-2">
+            <a href="/api/category/edit/<%= categories._id %>" class="btn-terracotta d-inline-flex align-items-center gap-1">
+              <i class="bi bi-pencil"></i> Edit Classification
+            </a>
+            <a href="/api/category" class="btn btn-outline-secondary">
+              Back to Catalog
+            </a>
+          </div>
+          <button
+            type="button"
+            class="btn btn-outline-danger d-inline-flex align-items-center gap-1"
+            onclick="confirmDelete('/api/category/delete/<%= categories._id %>')"
+          >
+            <i class="bi bi-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include("../partials/code-footer") %>

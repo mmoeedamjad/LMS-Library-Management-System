@@ -1,0 +1,188 @@
+<%- include("../partials/code-header") %>
+
+<!-- Breadcrumb Navigation -->
+<div class="admin-topbar d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+  <div class="d-flex align-items-center gap-2 small">
+    <a href="/api/dashboard" class="text-muted text-decoration-none">Dashboard</a>
+    <span class="text-muted">/</span>
+    <a href="/api/books" class="text-muted text-decoration-none">Books Catalog</a>
+    <span class="text-muted">/</span>
+    <span class="fw-bold text-dark" style="font-family: var(--font-cinzel);">Edit Record</span>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="/api/books/<%= book._id %>" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+      <i class="bi bi-eye"></i> View Record
+    </a>
+    <a href="/api/books" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+      <i class="bi bi-arrow-left"></i> Catalog
+    </a>
+  </div>
+</div>
+
+<!-- Header -->
+<div class="mb-4">
+  <span class="text-uppercase fw-bold" style="font-family: var(--font-cinzel); color: var(--ath-terracotta); font-size: 0.76rem; letter-spacing: 1.5px;">
+    INVENTORY REVISION &bull; PHYSICAL STACKS
+  </span>
+  <h1 class="display-6 fw-bold mt-1 mb-1" style="font-family: var(--font-serif); color: var(--ath-text-main);">
+    Edit Record: <%= book.title %>
+  </h1>
+  <p class="text-muted small mb-0">
+    Modify bibliographic metadata, reassign shelf stack coordinates, or adjust total copy counts.
+  </p>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-12 col-xl-10">
+    <div class="dashboard-card">
+      <div class="dashboard-card-header d-flex align-items-center justify-content-between">
+        <h3 class="dashboard-card-title" style="font-size: 1.15rem;">
+          <i class="bi bi-pencil-square text-warning"></i> Accession Metadata
+        </h3>
+        <span class="badge bg-light text-muted border font-monospace small">ID: <%= book._id %></span>
+      </div>
+
+      <div class="dashboard-card-body p-4">
+        <!-- Error Alerts -->
+        <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+          <div class="alert alert-danger py-2 px-3 small border-0 bg-danger bg-opacity-10 text-danger border border-danger border-opacity-20 rounded-2 mb-4">
+            <ul class="mb-0 ps-3">
+              <% errors.forEach(error => { %>
+                <li><%= error.msg %></li>
+              <% }) %>
+            </ul>
+          </div>
+        <% } %>
+
+        <form class="styled-form" method="POST" action="/api/books/edit/<%= book._id %>">
+          <!-- Row 1: Title & Author -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-7">
+              <label for="title" class="auth-label">
+                <i class="bi bi-bookmark me-1"></i> Book Title
+              </label>
+              <input
+                type="text"
+                name="title"
+                id="title"
+                class="auth-input"
+                value="<%= oldInput && oldInput.title ? oldInput.title : book.title %>"
+                required
+              />
+            </div>
+            <div class="col-md-5">
+              <label for="authorName" class="auth-label">
+                <i class="bi bi-person me-1"></i> Author Name
+              </label>
+              <input
+                type="text"
+                name="authorName"
+                id="authorName"
+                class="auth-input"
+                value="<%= oldInput && oldInput.authorName ? oldInput.authorName : book.authorName %>"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Row 2: ISBN & Category -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="isbn" class="auth-label">
+                <i class="bi bi-upc-scan me-1"></i> ISBN Number
+              </label>
+              <input
+                type="text"
+                name="isbn"
+                id="isbn"
+                class="auth-input font-monospace"
+                value="<%= oldInput && oldInput.isbn ? oldInput.isbn : book.isbn %>"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <% let selectedCategoryId = oldInput && oldInput.categoryId ? oldInput.categoryId : book.categoryId; %>
+              <label for="categoryId" class="auth-label">
+                <i class="bi bi-tag me-1"></i> Archival Category
+              </label>
+              <select name="categoryId" id="categoryId" class="auth-input" required>
+                <option value="">-- Select Category --</option>
+                <% categories.forEach(cat => { %>
+                  <option value="<%= cat._id %>" <%= String(selectedCategoryId) === String(cat._id) ? "selected" : "" %>>
+                    <%= cat.name %>
+                  </option>
+                <% }) %>
+              </select>
+            </div>
+          </div>
+
+          <!-- Row 3: Copies & Shelf Location -->
+          <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <label for="totalCopies" class="auth-label">
+                <i class="bi bi-collection me-1"></i> Total Copies
+              </label>
+              <input
+                type="number"
+                name="totalCopies"
+                id="totalCopies"
+                min="1"
+                class="auth-input font-monospace"
+                value="<%= oldInput && oldInput.totalCopies ? oldInput.totalCopies : book.totalCopies %>"
+                required
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="copiesAvailable" class="auth-label">
+                <i class="bi bi-check2-circle me-1"></i> Available Copies
+              </label>
+              <input
+                type="number"
+                name="copiesAvailable"
+                id="copiesAvailable"
+                min="0"
+                class="auth-input font-monospace"
+                value="<%= oldInput && oldInput.copiesAvailable ? oldInput.copiesAvailable : book.copiesAvailable %>"
+                required
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="shelfLocation" class="auth-label">
+                <i class="bi bi-geo-alt me-1"></i> Shelf Location
+              </label>
+              <input
+                type="text"
+                name="shelfLocation"
+                id="shelfLocation"
+                class="auth-input font-monospace"
+                value="<%= oldInput && oldInput.shelfLocation ? oldInput.shelfLocation : book.shelfLocation %>"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 pt-3 border-top">
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn-terracotta d-inline-flex align-items-center gap-1">
+                <i class="bi bi-check-circle"></i> Save Changes
+              </button>
+              <a href="/api/books" class="btn btn-outline-secondary">
+                Cancel
+              </a>
+            </div>
+            <button
+              type="button"
+              class="btn btn-outline-danger d-inline-flex align-items-center gap-1"
+              onclick="confirmDelete('/api/books/delete/<%= book._id %>')"
+            >
+              <i class="bi bi-trash"></i> Delete Volume
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include("../partials/code-footer") %>

@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Library Management System | Open-Source Public &amp; Academic Repository</title>
+    <meta name="description" content="A modern full-stack Library Management System for cataloging, member circulation, and digital archives." />
+    <!-- Google Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Three.js 3D WebGL Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <%
+    function getBookCover(book) {
+      const title = (book.title || '').toLowerCase();
+      const cat = (book.categoryId && book.categoryId.name ? book.categoryId.name : '').toLowerCase();
+
+      if (title.includes('clean code')) return 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80';
+      if (title.includes('pragmatic')) return 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=80';
+      if (title.includes('data-intensive')) return 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80';
+      if (title.includes('1984')) return 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=600&q=80';
+      if (title.includes('gatsby')) return 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?auto=format&fit=crop&w=600&q=80';
+      if (title.includes('mockingbird')) return 'https://images.unsplash.com/photo-1476275466078-4007374efbbe?auto=format&fit=crop&w=600&q=80';
+      if (title.includes('brief history of time')) return 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80';
+      if (title.includes('cosmos')) return 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=600&q=80';
+      if (title.includes('meditations')) return 'https://images.unsplash.com/photo-1568667256549-094345857637?auto=format&fit=crop&w=600&q=80';
+      if (title.includes('sapiens')) return 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=600&q=80';
+      if (title.includes('zero to one')) return 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80';
+      if (title.includes('fast and slow')) return 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=600&q=80';
+
+      if (cat.includes('computer')) return 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80';
+      if (cat.includes('literature')) return 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=600&q=80';
+      if (cat.includes('science') || cat.includes('physics')) return 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&w=600&q=80';
+      if (cat.includes('philosophy') || cat.includes('history')) return 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=600&q=80';
+      if (cat.includes('business') || cat.includes('economics')) return 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=600&q=80';
+
+      return 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80';
+    }
+    %>
+    <!-- Top Utility Announcement Bar (Pakistan Library Location & Timings) -->
+    <div class="ath-topbar">
+      <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div class="d-flex align-items-center gap-3">
+          <span><i class="bi bi-geo-alt me-1 text-warning"></i> Shahrah-e-Quaid-e-Azam (The Mall), Lahore 54000, Pakistan</span>
+          <span class="d-none d-md-inline">&bull;</span>
+          <span class="d-none d-md-inline"><i class="bi bi-telephone me-1 text-warning"></i> +92 (042) 9921-4501</span>
+          <span class="d-none d-lg-inline">&bull;</span>
+          <span class="d-none d-lg-inline">Est. 1928</span>
+        </div>
+        <div>
+          <span><i class="bi bi-clock me-1 text-warning"></i> Mon&ndash;Sat: 9:00 AM &ndash; 7:00 PM (Fri Break: 1:00&ndash;2:30 PM)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <nav class="navbar navbar-expand-xl navbar-athenaeum sticky-top">
+      <div class="container">
+        <a class="brand-athenaeum" href="/api/home">
+          <div class="brand-seal">
+            <i class="bi bi-book-half"></i>
+          </div>
+          <div>
+            <div class="brand-title">ATHENAEUM</div>
+            <div class="brand-subtitle">National Research Library &bull; Lahore, Pakistan</div>
+          </div>
+        </a>
+
+        <button
+          class="navbar-toggler border-0 p-1"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#athenaeumNav"
+          aria-controls="athenaeumNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i class="bi bi-list fs-2 text-dark"></i>
+        </button>
+
+        <div class="collapse navbar-collapse" id="athenaeumNav">
+          <ul class="navbar-nav mx-auto mb-2 mb-xl-0 gap-xl-1">
+            <li class="nav-item">
+              <a class="nav-link nav-link-ath" href="#collection-pillars">The Collection</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-link-ath" href="#card-catalog">Card Catalog</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-link-ath" href="#lending-services">Borrowing &amp; Services</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-link-ath" href="#manuscript-wing">Rare Manuscripts</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-link-ath" href="#visit-hours">Visit &amp; Hours</a>
+            </li>
+          </ul>
+
+          <div class="d-flex align-items-center gap-2 mt-3 mt-xl-0">
+            <a href="/api/auth/login" class="btn-outline-terracotta">
+              <i class="bi bi-shield-lock me-1"></i> Scholar Sign In
+            </a>
+            <a href="/api/auth/signup" class="btn-terracotta">
+              <i class="bi bi-card-heading me-1"></i> Apply for Card
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section (Prestigious, Pakistan Institutional Identity) -->
+    <header class="hero-athenaeum">
+      <div class="container">
+        <div class="hero-badge-tag">
+          <i class="bi bi-bank me-1"></i> PREMIER ACADEMIC &amp; PUBLIC RESEARCH REPOSITORY &bull; ESTD. 1928
+        </div>
+
+        <h1 class="hero-title-main">
+          ATHENAEUM
+        </h1>
+        <h2 class="hero-title-sub">
+          Central Research &amp; Public Lending Library
+        </h2>
+
+        <p class="hero-description">
+          Located on historic Shahrah-e-Quaid-e-Azam in Lahore. Preserving rare South Asian manuscripts, historical archives, classical literature, and contemporary scientific research across our reading halls and lending stacks.
+        </p>
+
+        <!-- Fast Catalog Search Field -->
+        <div class="hero-search-container">
+          <i class="bi bi-search text-muted fs-5 ms-2"></i>
+          <input
+            type="text"
+            id="heroQuickSearch"
+            class="hero-search-field"
+            placeholder="Search catalog by title, author, or shelf location (e.g. Iqbal, Clean Code, A1-01)..."
+            autocomplete="off"
+          />
+          <a href="#card-catalog" class="btn-terracotta py-2 px-3" id="heroSearchBtn">
+            Search Catalog
+          </a>
+        </div>
+
+        <!-- Call to Action Buttons -->
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+          <a href="#card-catalog" class="btn-terracotta btn-lg">
+            <i class="bi bi-card-list me-2"></i> Explore Catalog (<%= stats.totalBooks || books.length %> Titles)
+          </a>
+          <a href="#manuscript-wing" class="btn-outline-light-ath btn-lg">
+            <i class="bi bi-journal-bookmark me-2"></i> Rare Manuscripts Wing
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Key Archival Metrics Ribbon -->
+    <div class="py-4 border-bottom" style="background: #ffffff;">
+      <div class="container">
+        <div class="row g-4 text-center">
+          <div class="col-6 col-md-3">
+            <div class="fw-bold fs-2" style="font-family: var(--font-cinzel); color: var(--ath-terracotta);">
+              <%= stats.totalBooks || books.length %>
+            </div>
+            <div class="small text-muted text-uppercase" style="letter-spacing: 1px; font-size: 0.78rem;">
+              Cataloged Titles
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="fw-bold fs-2" style="font-family: var(--font-cinzel); color: var(--ath-text-main);">
+              <%= stats.totalCopies || 35 %>
+            </div>
+            <div class="small text-muted text-uppercase" style="letter-spacing: 1px; font-size: 0.78rem;">
+              Stack Copies
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="fw-bold fs-2" style="font-family: var(--font-cinzel); color: #2e7d32;">
+              <%= stats.availableCopies || 31 %>
+            </div>
+            <div class="small text-muted text-uppercase" style="letter-spacing: 1px; font-size: 0.78rem;">
+              Available on Shelf
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="fw-bold fs-2" style="font-family: var(--font-cinzel); color: var(--ath-terracotta);">
+              <%= stats.activeLoans || 4 %>
+            </div>
+            <div class="small text-muted text-uppercase" style="letter-spacing: 1px; font-size: 0.78rem;">
+              Active Circulating Loans
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- The 3 Pillars of the Athenaeum -->
+    <section class="section-pillars" id="collection-pillars">
+      <div class="container">
+        <div class="text-center max-w-2xl mx-auto mb-5">
+          <span class="text-uppercase fw-bold" style="font-family: var(--font-cinzel); color: var(--ath-terracotta); font-size: 0.8rem; letter-spacing: 2px;">
+            SCHOLARLY RESOURCES
+          </span>
+          <h2 class="display-6 fw-bold mt-2" style="font-family: var(--font-serif); color: var(--ath-text-main);">
+            Collections &amp; Research Facilities
+          </h2>
+          <p class="text-muted fs-5 mt-2">
+            Serving university scholars, independent researchers, and the reading public with comprehensive resources across the arts, humanities, and sciences.
+          </p>
+        </div>
+
+        <div class="row g-4">
+          <!-- Pillar 1: General & Academic Stacks -->
+          <div class="col-md-4">
+            <div class="pillar-card">
+              <div class="pillar-img-wrap">
+                <img src="/images/pillar-stacks.jpg" alt="General &amp; Research Stacks" />
+              </div>
+              <div class="pillar-content">
+                <h3 class="pillar-title">General &amp; Research Stacks</h3>
+                <p class="pillar-text">
+                  Over <%= stats.totalBooks || books.length %> cataloged volumes encompassing computer science, world literature, philosophy, natural sciences, and South Asian historical studies.
+                </p>
+                <div>
+                  <a href="#card-catalog" class="btn-outline-terracotta btn-sm">
+                    Search Stacks <i class="bi bi-arrow-right ms-1"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pillar 2: Member Circulation -->
+          <div class="col-md-4">
+            <div class="pillar-card">
+              <div class="pillar-img-wrap">
+                <img src="/images/pillar-circulation.jpg" alt="Lending &amp; Circulation Desk" />
+              </div>
+              <div class="pillar-content">
+                <h3 class="pillar-title">Lending &amp; Member Services</h3>
+                <p class="pillar-text">
+                  Enrolled students, faculty, and public fellows enjoy transparent borrowing quotas, quiet study carrels, inter-library requests, and secure self-service online renewals.
+                </p>
+                <div>
+                  <a href="#lending-services" class="btn-outline-terracotta btn-sm">
+                    Borrowing Rules <i class="bi bi-arrow-right ms-1"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pillar 3: Rare Oriental Manuscripts -->
+          <div class="col-md-4">
+            <div class="pillar-card">
+              <div class="pillar-img-wrap">
+                <img src="/images/pillar-archives.jpg" alt="Rare Manuscripts &amp; Archives" />
+              </div>
+              <div class="pillar-content">
+                <h3 class="pillar-title">Rare Manuscripts &amp; Archives</h3>
+                <p class="pillar-text">
+                  Preserving precious Persian, Arabic, and Urdu manuscripts, colonial-era gazetteers, and historical first editions under strict archival preservation protocols.
+                </p>
+                <div>
+                  <a href="#manuscript-wing" class="btn-outline-terracotta btn-sm">
+                    Examine 3D Archive <i class="bi bi-arrow-right ms-1"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Rare Manuscripts Wing (3D Archival Showcase) -->
+    <section class="section-codex-showcase" id="manuscript-wing">
+      <div class="container">
+        <div class="row align-items-center g-4 g-lg-5">
+          <div class="col-lg-6 text-start">
+            <span class="text-uppercase fw-bold" style="font-family: var(--font-cinzel); color: var(--ath-gold-bright); font-size: 0.8rem; letter-spacing: 2px;">
+              SPECIAL COLLECTIONS &bull; DIGITAL REPOSITORIES
+            </span>
+            <h2 class="display-5 fw-bold text-white mt-2 mb-3" style="font-family: var(--font-serif);">
+              Special Collections &amp; Digitized Rare Archives
+            </h2>
+            <p class="text-white-50 fs-5 mb-4" style="line-height: 1.7;">
+              Preserved in our temperature-controlled Rare Manuscripts Wing. Digitized for research access, scholars can examine the gilded calligraphy, hand-tooled leather binding, and historical marginalia in interactive 3D WebGL.
+            </p>
+
+            <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+              <button type="button" class="btn-terracotta" id="toggle-codex-btn">
+                <i class="bi bi-book-half me-2"></i> Open Manuscript
+              </button>
+              <button type="button" class="btn-outline-light-ath" id="reset-3d-book">
+                <i class="bi bi-arrow-clockwise me-1"></i> Reset Orientation
+              </button>
+            </div>
+
+            <div class="p-3 rounded-3 bg-black bg-opacity-40 border border-secondary border-opacity-50 text-white-50 small">
+              <i class="bi bi-info-circle text-warning me-2"></i>
+              <strong>Interactive Research Tool:</strong> Drag with cursor or touch to rotate the volume 360&deg; in real-time. Click <em>Open Manuscript</em> to swing the front cover open and inspect interior calligraphy folios.
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="codex-frame">
+              <div class="position-absolute top-0 start-0 end-0 p-3 d-flex justify-content-between align-items-center text-white-50 small" style="z-index: 2; pointer-events: none;">
+                <span class="font-monospace text-warning"><i class="bi bi-shield-check me-1"></i> ARCHIVAL ACCESSION NO. MS-1928/04</span>
+                <span class="badge bg-dark text-warning border border-warning border-opacity-25">THREE.JS WEBGL</span>
+              </div>
+              <div id="book-3d-canvas"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Card Catalog (Real MongoDB Books with Search & Filters) -->
+    <section class="section-catalog" id="card-catalog">
+      <div class="container">
+        <div class="text-center max-w-2xl mx-auto mb-5">
+          <span class="text-uppercase fw-bold" style="font-family: var(--font-cinzel); color: var(--ath-terracotta); font-size: 0.8rem; letter-spacing: 2px;">
+            CENTRAL REPOSITORY CATALOG
+          </span>
+          <h2 class="display-6 fw-bold mt-2" style="font-family: var(--font-serif); color: var(--ath-text-main);">
+            Explore The Athenaeum Catalog
+          </h2>
+          <p class="text-muted fs-5">
+            Search physical volumes across subject disciplines, inspect shelf coordinates, and check stack availability.
+          </p>
+        </div>
+
+        <!-- Search Bar in Vintage Style -->
+        <div class="row justify-content-center mb-4">
+          <div class="col-lg-8">
+            <div class="p-2 rounded-3 bg-white border border-2 border-warning border-opacity-50 shadow-sm d-flex align-items-center gap-2">
+              <i class="bi bi-search text-warning fs-5 ms-3"></i>
+              <input
+                type="text"
+                id="catalogSearch"
+                class="form-control border-0 shadow-none fs-6"
+                style="font-family: var(--font-body);"
+                placeholder="Type author, title, ISBN, or shelf location (e.g. A1-01, Martin, Orwell)..."
+                autocomplete="off"
+              />
+              <button type="button" class="btn btn-sm btn-outline-secondary px-3 d-none" id="catalogClearBtn">
+                Clear
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Discipline Drawer Filter Tabs -->
+        <div class="catalog-drawer-nav" id="drawerTabs">
+          <button type="button" class="drawer-tab active" data-category="all">
+            <i class="bi bi-folder2-open me-1"></i> All Disciplines (<%= books.length %>)
+          </button>
+          <% categories.forEach(cat => { %>
+            <% const count = books.filter(b => b.categoryId && b.categoryId._id.toString() === cat._id.toString()).length; %>
+            <button type="button" class="drawer-tab" data-category="<%= cat._id.toString() %>">
+              <i class="bi bi-folder me-1"></i> <%= cat.name %> (<%= count %>)
+            </button>
+          <% }) %>
+        </div>
+
+        <!-- Books Cards Grid -->
+        <div class="row g-4" id="bookCatalogGrid">
+          <% if (books.length === 0) { %>
+            <div class="col-12 text-center py-5">
+              <p class="text-muted fs-5">No volumes cataloged in this section.</p>
+            </div>
+          <% } else { %>
+            <% books.forEach(book => { %>
+              <div
+                class="col-md-6 col-lg-4 col-xl-3 book-card-col"
+                data-title="<%= book.title.toLowerCase() %>"
+                data-author="<%= (book.authorName || '').toLowerCase() %>"
+                data-isbn="<%= (book.isbn || '').toLowerCase() %>"
+                data-shelf="<%= (book.shelfLocation || '').toLowerCase() %>"
+                data-category="<%= book.categoryId ? book.categoryId._id.toString() : 'uncategorized' %>"
+              >
+                <div class="book-card-clean">
+                  <div class="book-thumb-wrap position-relative">
+                    <img
+                      src="<%= getBookCover(book) %>"
+                      alt="<%= book.title %> Cover"
+                      loading="lazy"
+                    />
+                    <div class="position-absolute top-0 end-0 m-2">
+                      <% if (book.copiesAvailable > 0) { %>
+                        <span class="badge bg-success bg-opacity-90 font-monospace small">
+                          <%= book.copiesAvailable %> on Shelf
+                        </span>
+                      <% } else { %>
+                        <span class="badge bg-danger bg-opacity-90 font-monospace small">
+                          Loaned Out
+                        </span>
+                      <% } %>
+                    </div>
+                  </div>
+
+                  <div class="book-body">
+                    <div class="book-callno">
+                      <i class="bi bi-geo-alt text-warning me-1"></i> <%= book.shelfLocation || 'STACK-A1' %>
+                    </div>
+                    <h3 class="book-title">
+                      <%= book.title %>
+                    </h3>
+                    <p class="book-author">
+                      by <%= book.authorName || 'Unknown Author' %>
+                    </p>
+
+                    <div class="border-top border-bottom py-2 my-2 small text-muted font-monospace">
+                      <div>ISBN: <%= book.isbn %></div>
+                      <div>Total Copies: <%= book.totalCopies %></div>
+                    </div>
+
+                    <div class="mt-auto pt-2">
+                      <a href="/api/auth/login" class="btn btn-sm btn-outline-dark w-100 fw-bold" style="font-family: var(--font-cinzel); font-size: 0.76rem; letter-spacing: 1px;">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Request Volume
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          <% } %>
+        </div>
+
+        <div id="noMatchMessage" class="text-center py-5 d-none">
+          <div class="p-4 bg-white border rounded-3 max-w-md mx-auto">
+            <h5 class="fw-bold text-dark mb-2" style="font-family: var(--font-cinzel);">No Volumes Match</h5>
+            <p class="text-muted small mb-3">No catalog entries match your search criteria.</p>
+            <button type="button" class="btn btn-sm btn-outline-dark" id="resetSearchFilter">
+              Reset Filters
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lending Services & Borrowing Guidelines (Legitimate Public Library Section) -->
+    <section class="section-ledger" id="lending-services">
+      <div class="container">
+        <div class="text-center max-w-2xl mx-auto mb-5">
+          <span class="text-uppercase fw-bold" style="font-family: var(--font-cinzel); color: var(--ath-terracotta); font-size: 0.8rem; letter-spacing: 2px;">
+            CIRCULATION POLICIES
+          </span>
+          <h2 class="display-6 fw-bold mt-2" style="font-family: var(--font-serif); color: var(--ath-text-main);">
+            Lending Services &amp; Borrowing Guidelines
+          </h2>
+          <p class="text-muted fs-5">
+            Clear, transparent borrowing allowances and circulation terms for university scholars, research fellows, and the public.
+          </p>
+        </div>
+
+        <!-- Borrowing Rules Table -->
+        <div class="table-responsive bg-white rounded-3 border mb-4">
+          <table class="ledger-table-clean">
+            <thead>
+              <tr>
+                <th>Membership Tier</th>
+                <th>Borrowing Quota</th>
+                <th>Loan Duration</th>
+                <th>Online Renewals</th>
+                <th>Stack &amp; Reading Room Privileges</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <strong class="d-block" style="font-family: var(--font-serif); font-size: 1.15rem;">
+                    Student Scholars
+                  </strong>
+                  <small class="text-muted">Enrolled College &amp; University Students</small>
+                </td>
+                <td class="font-monospace fw-bold text-dark">3 Volumes</td>
+                <td>14 Calendar Days</td>
+                <td><span class="badge bg-light text-dark border">2 Online Renewals</span></td>
+                <td class="small text-muted">General Stacks, High-Speed Wi-Fi &amp; Main Reading Hall</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong class="d-block" style="font-family: var(--font-serif); font-size: 1.15rem;">
+                    Faculty &amp; Postgrad Researchers
+                  </strong>
+                  <small class="text-muted">Professors, MPhil / PhD Scholars</small>
+                </td>
+                <td class="font-monospace fw-bold text-dark">8 Volumes</td>
+                <td>30 Calendar Days</td>
+                <td><span class="badge bg-light text-dark border">3 Online Renewals</span></td>
+                <td class="small text-muted">Full Stack Access, Archival Research Carrels &amp; Inter-Library Loans</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong class="d-block" style="font-family: var(--font-serif); font-size: 1.15rem;">
+                    Public Fellows
+                  </strong>
+                  <small class="text-muted">Civil Society &amp; Independent Readers</small>
+                </td>
+                <td class="font-monospace fw-bold text-dark">2 Volumes</td>
+                <td>14 Calendar Days</td>
+                <td><span class="badge bg-light text-dark border">1 Online Renewal</span></td>
+                <td class="small text-muted">Circulating Stacks, Periodicals Room &amp; Public Terminals</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong class="d-block" style="font-family: var(--font-serif); font-size: 1.15rem;">
+                    Institutional Members
+                  </strong>
+                  <small class="text-muted">Registered Research Institutes &amp; Colleges</small>
+                </td>
+                <td class="font-monospace fw-bold text-dark">12 Volumes</td>
+                <td>60 Calendar Days</td>
+                <td><span class="badge bg-light text-dark border">By Official Request</span></td>
+                <td class="small text-muted">Consortium Exchange, Extended Archival Loan &amp; Digital Scanning</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Privacy & Scholar Dashboard Callout -->
+        <div class="p-4 rounded-3 border d-flex flex-column flex-md-row align-items-center justify-content-between gap-3" style="background: var(--ath-bg-cream); border-color: var(--ath-border-warm) !important;">
+          <div class="d-flex align-items-center gap-3">
+            <div class="fs-1 text-warning">
+              <i class="bi bi-shield-lock-fill"></i>
+            </div>
+            <div>
+              <h5 class="fw-bold mb-1" style="font-family: var(--font-serif); color: var(--ath-text-main);">
+                Secure Patron Privacy &amp; Self-Service Circulation
+              </h5>
+              <p class="mb-0 text-muted small">
+                In compliance with library confidentiality ethics, individual borrowing histories and active loan details are strictly protected. Log in to your personal dashboard to track your loans, check due dates, and renew volumes.
+              </p>
+            </div>
+          </div>
+          <a href="/api/auth/login" class="btn-terracotta text-nowrap">
+            <i class="bi bi-box-arrow-in-right me-1"></i> Access Scholar Portal
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Visit & Hours (Pakistan Location) -->
+    <section class="section-visit" id="visit-hours">
+      <div class="container">
+        <div class="row g-4">
+          <div class="col-lg-4">
+            <div class="info-box-ath">
+              <h4 class="info-box-title">
+                <i class="bi bi-geo-alt text-warning"></i> Location &amp; Campus
+              </h4>
+              <p class="mb-1 fw-bold">The Central Athenaeum Library</p>
+              <p class="mb-3 text-muted">Shahrah-e-Quaid-e-Azam (The Mall)<br />Near Charing Cross, Lahore 54000, Pakistan</p>
+              <p class="small text-muted">Centrally located on historic Mall Road, easily accessible via Lahore Metrobus and public transit.</p>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="info-box-ath">
+              <h4 class="info-box-title">
+                <i class="bi bi-clock text-warning"></i> Library Working Hours
+              </h4>
+              <ul class="list-unstyled mb-0" style="font-size: 1.05rem;">
+                <li class="d-flex justify-content-between py-1 border-bottom">
+                  <span>Monday &ndash; Thursday</span>
+                  <span class="fw-bold">9:00 AM &ndash; 7:00 PM</span>
+                </li>
+                <li class="d-flex justify-content-between py-1 border-bottom">
+                  <span>Friday</span>
+                  <span class="fw-bold">9:00 AM &ndash; 7:00 PM <small class="text-muted d-block" style="font-size: 0.75rem;">(Break: 1:00&ndash;2:30 PM)</small></span>
+                </li>
+                <li class="d-flex justify-content-between py-1 border-bottom">
+                  <span>Saturday</span>
+                  <span class="fw-bold">9:00 AM &ndash; 5:00 PM</span>
+                </li>
+                <li class="d-flex justify-content-between py-1">
+                  <span>Sunday</span>
+                  <span class="text-muted">10:00 AM &ndash; 4:00 PM <small class="d-block" style="font-size: 0.75rem;">(Reading Halls Only)</small></span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="info-box-ath">
+              <h4 class="info-box-title">
+                <i class="bi bi-envelope-paper text-warning"></i> Inquiries &amp; Helpdesk
+              </h4>
+              <p class="mb-1"><strong>Phone:</strong> +92 (042) 9921-4501 / 02</p>
+              <p class="mb-1"><strong>Circulation:</strong> circulation@athenaeum.edu.pk</p>
+              <p class="mb-3"><strong>General:</strong> info@athenaeum.edu.pk</p>
+              <div class="d-flex gap-2">
+                <a href="/api/auth/signup" class="btn-terracotta btn-sm">
+                  Apply for Card
+                </a>
+                <a href="/api/auth/login" class="btn-outline-terracotta btn-sm">
+                  Scholar Portal
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Generic Open-Source Project Footer -->
+    <footer class="footer-athenaeum">
+      <div class="container">
+        <div class="row g-4 g-lg-5 mb-5">
+          <!-- Column 1: Project Overview -->
+          <div class="col-lg-4">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <div class="brand-seal" style="width: 36px; height: 36px; font-size: 1rem;">
+                <i class="bi bi-book-half"></i>
+              </div>
+              <span class="fs-5 text-white" style="font-family: var(--font-cinzel); font-weight: 800; letter-spacing: 1.5px;">
+                LIBRARY SYSTEM
+              </span>
+            </div>
+            <p class="pe-lg-3 small" style="line-height: 1.7; color: #a89f91;">
+              A full-stack open-source Library Management System featuring real-time catalog search, member borrowing quotas, category classifications, and interactive 3D archival previews.
+            </p>
+            <div class="mt-3">
+              <span class="footer-tech-pill">Node.js</span>
+              <span class="footer-tech-pill">Express</span>
+              <span class="footer-tech-pill">MongoDB</span>
+              <span class="footer-tech-pill">EJS</span>
+              <span class="footer-tech-pill">Bootstrap 5</span>
+              <span class="footer-tech-pill">Three.js</span>
+            </div>
+          </div>
+
+          <!-- Column 2: Navigation Links -->
+          <div class="col-6 col-lg-2">
+            <h5>Navigation</h5>
+            <ul class="list-unstyled d-grid gap-2 small">
+              <li><a href="#collection-pillars">Collection Overview</a></li>
+              <li><a href="#card-catalog">Card Catalog</a></li>
+              <li><a href="#lending-services">Borrowing Policies</a></li>
+              <li><a href="#manuscript-wing">3D Manuscript Archive</a></li>
+              <li><a href="#visit-hours">Campus &amp; Hours</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 3: Member & Admin Access -->
+          <div class="col-6 col-lg-3">
+            <h5>Portal Access</h5>
+            <ul class="list-unstyled d-grid gap-2 small mb-3">
+              <li><a href="/api/auth/login"><i class="bi bi-person me-1"></i> Scholar / Member Sign In</a></li>
+              <li><a href="/api/auth/login"><i class="bi bi-shield-lock me-1"></i> Staff &amp; Admin Console</a></li>
+              <li><a href="/api/auth/signup"><i class="bi bi-person-plus me-1"></i> Member Card Registration</a></li>
+            </ul>
+            <div class="p-2 rounded bg-black bg-opacity-30 border border-secondary border-opacity-25 small text-white-50">
+              <i class="bi bi-info-circle text-warning me-1"></i> Demo: <code>admin@library.com</code> / <code>admin123</code>
+            </div>
+          </div>
+
+          <!-- Column 4: Open-Source Repository Info -->
+          <div class="col-lg-3">
+            <h5>Open Source Repo</h5>
+            <p class="small text-white-50 mb-3">
+              Ready to deploy or customize for universities, colleges, or public library facilities. Distributed under the permissive MIT license.
+            </p>
+            <div class="d-flex flex-column gap-2">
+              <a href="https://github.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline-light d-inline-flex align-items-center justify-content-center gap-2">
+                <i class="bi bi-github"></i> View on GitHub
+              </a>
+              <a href="/api/auth/login" class="btn btn-sm btn-terracotta d-inline-flex align-items-center justify-content-center gap-1">
+                <i class="bi bi-box-arrow-in-right"></i> Launch App Portal
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+          <div>&copy; 2026 Library Management System &bull; Open-Source Project.</div>
+          <div class="d-flex gap-3">
+            <a href="#card-catalog">Catalog</a>
+            <a href="#lending-services">Policies</a>
+            <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+            <a href="/api/auth/login">Login</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Three.js 3D Book Interactive Script -->
+    <script src="/js/hero-book-3d.js"></script>
+
+    <!-- Catalog Live Search & Drawer Filtering -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('catalogSearch');
+        const clearBtn = document.getElementById('catalogClearBtn');
+        const drawerBtns = document.querySelectorAll('.drawer-tab');
+        const bookCards = document.querySelectorAll('.book-card-col');
+        const noMatch = document.getElementById('noMatchMessage');
+        const resetBtn = document.getElementById('resetSearchFilter');
+        const heroQuickSearch = document.getElementById('heroQuickSearch');
+
+        let activeCategory = 'all';
+        let searchQuery = '';
+
+        function filterCatalog() {
+          let visibleCount = 0;
+          const query = searchQuery.trim().toLowerCase();
+
+          bookCards.forEach(card => {
+            const title = card.dataset.title || '';
+            const author = card.dataset.author || '';
+            const isbn = card.dataset.isbn || '';
+            const shelf = card.dataset.shelf || '';
+            const cat = card.dataset.category || '';
+
+            const matchesCategory = (activeCategory === 'all' || cat === activeCategory);
+            const matchesQuery = !query || (
+              title.includes(query) ||
+              author.includes(query) ||
+              isbn.includes(query) ||
+              shelf.includes(query)
+            );
+
+            if (matchesCategory && matchesQuery) {
+              card.style.display = '';
+              visibleCount++;
+            } else {
+              card.style.display = 'none';
+            }
+          });
+
+          if (visibleCount === 0 && bookCards.length > 0) {
+            noMatch.classList.remove('d-none');
+          } else {
+            noMatch.classList.add('d-none');
+          }
+        }
+
+        searchInput.addEventListener('input', (e) => {
+          searchQuery = e.target.value;
+          clearBtn.classList.toggle('d-none', searchQuery.length === 0);
+          filterCatalog();
+        });
+
+        clearBtn.addEventListener('click', () => {
+          searchInput.value = '';
+          searchQuery = '';
+          clearBtn.classList.add('d-none');
+          searchInput.focus();
+          filterCatalog();
+        });
+
+        drawerBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            drawerBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeCategory = btn.dataset.category;
+            filterCatalog();
+          });
+        });
+
+        if (resetBtn) {
+          resetBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            searchQuery = '';
+            clearBtn.classList.add('d-none');
+            activeCategory = 'all';
+            drawerBtns.forEach(b => {
+              b.classList.toggle('active', b.dataset.category === 'all');
+            });
+            filterCatalog();
+          });
+        }
+
+        if (heroQuickSearch) {
+          heroQuickSearch.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            searchInput.value = searchQuery;
+            clearBtn.classList.toggle('d-none', searchQuery.length === 0);
+            filterCatalog();
+          });
+          heroQuickSearch.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              document.getElementById('card-catalog').scrollIntoView({ behavior: 'smooth' });
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

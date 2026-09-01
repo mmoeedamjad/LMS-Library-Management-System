@@ -1,0 +1,261 @@
+<%- include("./partials/code-header.ejs") %>
+
+<!-- Admin Topbar -->
+<div class="admin-topbar d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+  <div class="d-flex align-items-center gap-2">
+    <span class="text-uppercase fw-bold text-muted small" style="font-family: var(--font-cinzel); font-size: 0.72rem; letter-spacing: 1px;">
+      <i class="bi bi-shield-check text-warning me-1"></i> Admin Console
+    </span>
+    <span class="text-muted">&bull;</span>
+    <span class="small text-muted">Shahrah-e-Quaid-e-Azam, Lahore</span>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 small">
+      <i class="bi bi-check-circle-fill me-1"></i> Database Live
+    </span>
+    <a href="/api/home" class="btn btn-sm btn-outline-secondary py-1 px-2 font-monospace" style="font-size: 0.76rem;" target="_blank">
+      <i class="bi bi-box-arrow-up-right me-1"></i> Public Catalog
+    </a>
+  </div>
+</div>
+
+<!-- Dashboard Hero Header -->
+<div class="mb-4">
+  <span class="text-uppercase fw-bold" style="font-family: var(--font-cinzel); color: var(--ath-terracotta); font-size: 0.76rem; letter-spacing: 1.5px;">
+    INSTITUTIONAL METRICS &bull; CENTRAL REPOSITORY
+  </span>
+  <h1 class="display-6 fw-bold mt-1 mb-1" style="font-family: var(--font-serif); color: var(--ath-text-main);">
+    Circulation &amp; Inventory Desk
+  </h1>
+  <p class="text-muted small mb-0">
+    Real-time repository statistics, member borrowing volumes, stacks capacity, and quick collection management.
+  </p>
+</div>
+
+<!-- 5 Stat Metrics Grid -->
+<div class="row g-3 mb-4">
+  <!-- Total Users -->
+  <div class="col-6 col-lg">
+    <div class="dashboard-stat-card">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="text-muted small text-uppercase fw-bold" style="font-family: var(--font-cinzel); font-size: 0.68rem; letter-spacing: 0.8px;">
+          Members
+        </span>
+        <div class="p-2 rounded bg-warning bg-opacity-10 text-warning">
+          <i class="bi bi-people fs-5"></i>
+        </div>
+      </div>
+      <div class="dashboard-stat-number" style="color: var(--ath-terracotta);">
+        <%= totalUsers %>
+      </div>
+      <div class="text-muted small mt-1">Enrolled Scholars</div>
+    </div>
+  </div>
+
+  <!-- Total Admins -->
+  <div class="col-6 col-lg">
+    <div class="dashboard-stat-card">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="text-muted small text-uppercase fw-bold" style="font-family: var(--font-cinzel); font-size: 0.68rem; letter-spacing: 0.8px;">
+          Admins
+        </span>
+        <div class="p-2 rounded bg-secondary bg-opacity-10 text-dark">
+          <i class="bi bi-shield-lock fs-5"></i>
+        </div>
+      </div>
+      <div class="dashboard-stat-number">
+        <%= totalAdmins %>
+      </div>
+      <div class="text-muted small mt-1">Authorized Staff</div>
+    </div>
+  </div>
+
+  <!-- Total Books -->
+  <div class="col-6 col-lg">
+    <div class="dashboard-stat-card">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="text-muted small text-uppercase fw-bold" style="font-family: var(--font-cinzel); font-size: 0.68rem; letter-spacing: 0.8px;">
+          Catalog
+        </span>
+        <div class="p-2 rounded bg-primary bg-opacity-10 text-primary">
+          <i class="bi bi-book-half fs-5"></i>
+        </div>
+      </div>
+      <div class="dashboard-stat-number" style="color: var(--ath-gold-bright);">
+        <%= totalBooks %>
+      </div>
+      <div class="text-muted small mt-1">Cataloged Titles</div>
+    </div>
+  </div>
+
+  <!-- Issued Books -->
+  <div class="col-6 col-lg">
+    <div class="dashboard-stat-card">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="text-muted small text-uppercase fw-bold" style="font-family: var(--font-cinzel); font-size: 0.68rem; letter-spacing: 0.8px;">
+          On Loan
+        </span>
+        <div class="p-2 rounded bg-danger bg-opacity-10 text-danger">
+          <i class="bi bi-hourglass-split fs-5"></i>
+        </div>
+      </div>
+      <div class="dashboard-stat-number" style="color: #c62828;">
+        <%= issuedBooks %>
+      </div>
+      <div class="text-muted small mt-1">Active Loans</div>
+    </div>
+  </div>
+
+  <!-- Returned Books -->
+  <div class="col-12 col-lg">
+    <div class="dashboard-stat-card">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="text-muted small text-uppercase fw-bold" style="font-family: var(--font-cinzel); font-size: 0.68rem; letter-spacing: 0.8px;">
+          Returned
+        </span>
+        <div class="p-2 rounded bg-success bg-opacity-10 text-success">
+          <i class="bi bi-check2-circle fs-5"></i>
+        </div>
+      </div>
+      <div class="dashboard-stat-number" style="color: #2e7d32;">
+        <%= returnedBooks %>
+      </div>
+      <div class="text-muted small mt-1">Discharged Records</div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Action Dispatch Bar -->
+<div class="dashboard-card mb-4">
+  <div class="dashboard-card-header">
+    <h3 class="dashboard-card-title" style="font-size: 1.15rem;">
+      <i class="bi bi-lightning-charge text-warning"></i> Quick Operations
+    </h3>
+    <span class="small text-muted">Common circulation workflows</span>
+  </div>
+  <div class="dashboard-card-body py-3">
+    <div class="d-flex flex-wrap gap-2">
+      <a href="/api/transactions/add" class="btn-terracotta btn-sm d-inline-flex align-items-center gap-1">
+        <i class="bi bi-arrow-left-right"></i> Issue Book to Member
+      </a>
+      <a href="/api/books/add" class="btn-outline-terracotta btn-sm d-inline-flex align-items-center gap-1">
+        <i class="bi bi-plus-circle"></i> Catalog New Volume
+      </a>
+      <a href="/api/category/add" class="btn btn-outline-dark btn-sm d-inline-flex align-items-center gap-1">
+        <i class="bi bi-folder-plus"></i> New Category
+      </a>
+      <a href="/api/users/add" class="btn btn-outline-dark btn-sm d-inline-flex align-items-center gap-1">
+        <i class="bi bi-person-plus"></i> Enroll Scholar Member
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Lower Two Columns: Operational Directives & Catalog Shortcuts -->
+<div class="row g-4 mb-4">
+  <!-- Operational Directives / Admin Guidelines -->
+  <div class="col-lg-6">
+    <div class="dashboard-card h-100 mb-0">
+      <div class="dashboard-card-header">
+        <h3 class="dashboard-card-title" style="font-size: 1.15rem;">
+          <i class="bi bi-journal-text text-warning"></i> Circulation Directives
+        </h3>
+        <span class="badge bg-light text-muted border font-monospace small">Lahore Campus</span>
+      </div>
+      <div class="dashboard-card-body">
+        <div class="d-flex align-items-start gap-3 mb-3 pb-3 border-bottom">
+          <div class="p-2 rounded bg-warning bg-opacity-10 text-warning mt-1">
+            <i class="bi bi-clock-history"></i>
+          </div>
+          <div>
+            <h6 class="fw-bold mb-1 text-dark" style="font-family: var(--font-serif);">Loan Duration Policy</h6>
+            <p class="small text-muted mb-0">
+              Standard borrowing privilege is 14 days with up to 2 online renewals per enrolled member.
+            </p>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-start gap-3 mb-3 pb-3 border-bottom">
+          <div class="p-2 rounded bg-danger bg-opacity-10 text-danger mt-1">
+            <i class="bi bi-exclamation-triangle"></i>
+          </div>
+          <div>
+            <h6 class="fw-bold mb-1 text-dark" style="font-family: var(--font-serif);">Weekly Overdue Audit</h6>
+            <p class="small text-muted mb-0">
+              Audit overdue records every Monday. Automated reminder dispatches are sent to scholar email addresses.
+            </p>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-start gap-3">
+          <div class="p-2 rounded bg-success bg-opacity-10 text-success mt-1">
+            <i class="bi bi-shield-check"></i>
+          </div>
+          <div>
+            <h6 class="fw-bold mb-1 text-dark" style="font-family: var(--font-serif);">Stacks Preservation Guidelines</h6>
+            <p class="small text-muted mb-0">
+              Ensure rare first editions and manuscripts remain within the climate-controlled reading wing.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Repository Module Shortcuts -->
+  <div class="col-lg-6">
+    <div class="dashboard-card h-100 mb-0">
+      <div class="dashboard-card-header">
+        <h3 class="dashboard-card-title" style="font-family: var(--font-serif); font-size: 1.15rem;">
+          <i class="bi bi-grid-3x3-gap text-warning"></i> Repository Management Hub
+        </h3>
+        <span class="small text-muted">Direct Shortcuts</span>
+      </div>
+      <div class="dashboard-card-body">
+        <div class="row g-2">
+          <div class="col-6">
+            <a href="/api/books" class="p-3 bg-light rounded border d-block text-decoration-none text-dark h-100 hover-card">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi bi-book text-warning fs-5"></i>
+                <span class="fw-bold">Books Catalog</span>
+              </div>
+              <small class="text-muted d-block">Manage inventory, quantities, and shelf locations.</small>
+            </a>
+          </div>
+
+          <div class="col-6">
+            <a href="/api/transactions" class="p-3 bg-light rounded border d-block text-decoration-none text-dark h-100 hover-card">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi bi-arrow-left-right text-warning fs-5"></i>
+                <span class="fw-bold">Circulation Ledger</span>
+              </div>
+              <small class="text-muted d-block">Review active loans, due dates, and return books.</small>
+            </a>
+          </div>
+
+          <div class="col-6">
+            <a href="/api/category" class="p-3 bg-light rounded border d-block text-decoration-none text-dark h-100 hover-card">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi bi-tags text-warning fs-5"></i>
+                <span class="fw-bold">Categories</span>
+              </div>
+              <small class="text-muted d-block">Classify volumes into academic and literary fields.</small>
+            </a>
+          </div>
+
+          <div class="col-6">
+            <a href="/api/users/user" class="p-3 bg-light rounded border d-block text-decoration-none text-dark h-100 hover-card">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi bi-people text-warning fs-5"></i>
+                <span class="fw-bold">Member Registry</span>
+              </div>
+              <small class="text-muted d-block">Audit registered scholars, roles, and credentials.</small>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include("./partials/code-footer.ejs") %>

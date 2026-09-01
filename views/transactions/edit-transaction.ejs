@@ -1,0 +1,164 @@
+<%- include("../partials/code-header") %>
+
+<!-- Breadcrumb Navigation -->
+<div class="admin-topbar d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+  <div class="d-flex align-items-center gap-2 small">
+    <a href="/api/dashboard" class="text-muted text-decoration-none">Dashboard</a>
+    <span class="text-muted">/</span>
+    <a href="/api/transactions" class="text-muted text-decoration-none">Circulation</a>
+    <span class="text-muted">/</span>
+    <span class="fw-bold text-dark" style="font-family: var(--font-cinzel);">Edit Transaction</span>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="/api/transactions/<%= transaction._id %>" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+      <i class="bi bi-eye"></i> View Record
+    </a>
+    <a href="/api/transactions" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+      <i class="bi bi-arrow-left"></i> Ledger
+    </a>
+  </div>
+</div>
+
+<!-- Header -->
+<div class="mb-4">
+  <span class="text-uppercase fw-bold" style="font-family: var(--font-cinzel); color: var(--ath-terracotta); font-size: 0.76rem; letter-spacing: 1.5px;">
+    LOAN REVISION &bull; CIRCULATION AUDIT
+  </span>
+  <h1 class="display-6 fw-bold mt-1 mb-1" style="font-family: var(--font-serif); color: var(--ath-text-main);">
+    Modify Circulation Record
+  </h1>
+  <p class="text-muted small mb-0">
+    Update lending status, extend return due dates, or discharge volume returns.
+  </p>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-12 col-md-8 col-lg-7">
+    <div class="dashboard-card">
+      <div class="dashboard-card-header d-flex align-items-center justify-content-between">
+        <h3 class="dashboard-card-title" style="font-size: 1.15rem;">
+          <i class="bi bi-pencil-square text-warning"></i> Transaction Parameters
+        </h3>
+        <span class="badge bg-light text-muted border font-monospace small">ID: <%= transaction._id %></span>
+      </div>
+
+      <div class="dashboard-card-body p-4">
+        <!-- Error Alerts -->
+        <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+          <div class="alert alert-danger py-2 px-3 small border-0 bg-danger bg-opacity-10 text-danger border border-danger border-opacity-20 rounded-2 mb-4">
+            <ul class="mb-0 ps-3">
+              <% errors.forEach(error => { %>
+                <li><%= error.msg %></li>
+              <% }) %>
+            </ul>
+          </div>
+        <% } %>
+
+        <form class="styled-form" action="/api/transactions/edit/<%= transaction._id %>" method="POST">
+          <div class="mb-3">
+            <label for="userId" class="auth-label">
+              <i class="bi bi-person me-1"></i> Scholar Patron / Member
+            </label>
+            <select name="userId" id="userId" class="auth-input" required>
+              <option value="">-- Select Member --</option>
+              <% users.forEach(user => { %>
+                <% let isSelected = oldInput && oldInput.userId ? (oldInput.userId.toString() === user._id.toString()) : (transaction.userId && transaction.userId.toString() === user._id.toString()); %>
+                <option value="<%= user._id %>" <%= isSelected ? "selected" : "" %>>
+                  <%= user.name %> (<%= user.email %>)
+                </option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="bookId" class="auth-label">
+              <i class="bi bi-book me-1"></i> Cataloged Volume
+            </label>
+            <select name="bookId" id="bookId" class="auth-input" required>
+              <option value="">-- Select Book --</option>
+              <% books.forEach(book => { %>
+                <% let isSelected = oldInput && oldInput.bookId ? (oldInput.bookId.toString() === book._id.toString()) : (transaction.bookId && transaction.bookId.toString() === book._id.toString()); %>
+                <option value="<%= book._id %>" <%= isSelected ? "selected" : "" %>>
+                  <%= book.title %> [<%= book.shelfLocation || 'Shelf A1' %>]
+                </option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="issueDate" class="auth-label">
+                <i class="bi bi-calendar me-1"></i> Dispatched Issue Date
+              </label>
+              <input
+                type="date"
+                name="issueDate"
+                id="issueDate"
+                class="auth-input font-monospace bg-light"
+                value="<%= transaction.issueDate.toISOString().substring(0,10) %>"
+                readonly
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="dueDate" class="auth-label">
+                <i class="bi bi-calendar-event me-1"></i> Return Due Date
+              </label>
+              <input
+                type="date"
+                name="dueDate"
+                id="dueDate"
+                class="auth-input font-monospace"
+                value="<%= oldInput && oldInput.dueDate ? new Date(oldInput.dueDate).toISOString().substring(0,10) : transaction.dueDate.toISOString().substring(0,10) %>"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label for="returnDate" class="auth-label">
+                <i class="bi bi-clock-history me-1"></i> Return Discharge Date
+              </label>
+              <input
+                type="text"
+                id="returnDate"
+                class="auth-input font-monospace bg-light"
+                value="<%= transaction.returnDate ? transaction.returnDate.toISOString().substring(0,10) : 'Not Returned Yet' %>"
+                readonly
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="status" class="auth-label">
+                <i class="bi bi-check2-circle me-1"></i> Circulation Status
+              </label>
+              <select name="status" id="status" class="auth-input">
+                <option value="Issued" <%= transaction.status === "Issued" ? "selected" : "" %>>Issued (Active Loan)</option>
+                <option value="Returned" <%= transaction.status === "Returned" ? "selected" : "" %>>Returned (Restocked)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 pt-3 border-top">
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn-terracotta d-inline-flex align-items-center gap-1">
+                <i class="bi bi-check-circle"></i> Save Updates
+              </button>
+              <a href="/api/transactions" class="btn btn-outline-secondary">
+                Cancel
+              </a>
+            </div>
+            <button
+              type="button"
+              class="btn btn-outline-danger d-inline-flex align-items-center gap-1"
+              onclick="confirmDelete('/api/transactions/delete/<%= transaction._id %>')"
+            >
+              <i class="bi bi-trash"></i> Delete Record
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include("../partials/code-footer") %>

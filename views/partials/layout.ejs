@@ -1,0 +1,94 @@
+<!-- views/partials/layout.ejs: Admin Sidebar Navigation -->
+<aside class="admin-sidebar">
+  <div class="admin-sidebar-brand">
+    <a href="/api/dashboard" class="d-flex align-items-center gap-2 text-decoration-none">
+      <div class="brand-seal" style="width: 38px; height: 38px; font-size: 1.05rem;">
+        <i class="bi bi-book-half"></i>
+      </div>
+      <div>
+        <div style="font-family: var(--font-cinzel); font-weight: 800; font-size: 1.1rem; letter-spacing: 1.5px; color: #ffffff;">
+          ATHENAEUM
+        </div>
+        <div style="font-family: var(--font-serif); font-style: italic; font-size: 0.76rem; color: var(--ath-gold-bright);">
+          Staff &amp; Admin Desk
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="admin-sidebar-menu">
+    <div class="admin-sidebar-section-title">CORE MANAGEMENT</div>
+    <ul class="admin-nav-list">
+      <li>
+        <a href="/api/dashboard" class="admin-nav-link <%= typeof page !== 'undefined' && page === 'dashboard' ? 'active' : '' %>">
+          <i class="bi bi-speedometer2"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="/api/books" class="admin-nav-link <%= typeof page !== 'undefined' && page === 'books' ? 'active' : '' %>">
+          <i class="bi bi-book"></i>
+          <span>Books Catalog</span>
+        </a>
+      </li>
+      <li>
+        <a href="/api/category" class="admin-nav-link <%= typeof page !== 'undefined' && page === 'categories' ? 'active' : '' %>">
+          <i class="bi bi-tags"></i>
+          <span>Categories</span>
+        </a>
+      </li>
+      <li>
+        <a href="/api/transactions" class="admin-nav-link <%= typeof page !== 'undefined' && page === 'transactions' ? 'active' : '' %>">
+          <i class="bi bi-arrow-left-right"></i>
+          <span>Circulation Loans</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="admin-sidebar-section-title mt-3">MEMBERS &amp; ACCESS</div>
+    <ul class="admin-nav-list">
+      <li>
+        <a href="/api/users/user" class="admin-nav-link <%= typeof page !== 'undefined' && page === 'user' ? 'active' : '' %>">
+          <i class="bi bi-people"></i>
+          <span>Scholar Members</span>
+        </a>
+      </li>
+      <li>
+        <a href="/api/users/admin" class="admin-nav-link <%= typeof page !== 'undefined' && page === 'admin' ? 'active' : '' %>">
+          <i class="bi bi-shield-lock"></i>
+          <span>Administrators</span>
+        </a>
+      </li>
+      <% if (typeof userId !== 'undefined' && userId) { %>
+        <li>
+          <a href="/api/users/personal/<%= userId %>" class="admin-nav-link <%= typeof page !== 'undefined' && page === 'personal' ? 'active' : '' %>">
+            <i class="bi bi-person-circle"></i>
+            <span>Personal Profile</span>
+          </a>
+        </li>
+      <% } %>
+    </ul>
+
+    <div class="admin-sidebar-section-title mt-3">NAVIGATION</div>
+    <ul class="admin-nav-list">
+      <li>
+        <a href="/api/home" class="admin-nav-link">
+          <i class="bi bi-compass"></i>
+          <span>Public Catalog</span>
+        </a>
+      </li>
+      <li>
+        <a href="/api/auth/logout" class="admin-nav-link text-danger">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Sign Out</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="admin-sidebar-footer">
+    <div class="small text-white-50" style="font-size: 0.72rem;">
+      <i class="bi bi-geo-alt me-1 text-warning"></i> Lahore Campus &bull; v2.4
+    </div>
+  </div>
+</aside>
